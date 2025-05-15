@@ -2,192 +2,411 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard - StreetFinest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StreetFinest - Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet"/>
   <style>
+    :root {
+      --navy: #002147;
+      --accent: #c0392b;
+      --gold: #ffd700;
+      --white: #ffffff;
+      --blue: #0077be;
+      --maroon: #8b0000cc;
+      --cute-bg: #fff0f5;
+      --cute-border: #ffb6c1;
+      --cute-accent: #ff69b4;
+      --bg-light: #ecf0f1;
+      --text-dark: #333;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-image: url("strety.jpg");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center center;
-      color: #fff;
-      height: 100vh;
-      display: flex;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      overflow-x: hidden;
     }
-    .sidebar {
-      width: 240px;
-      background: rgba(0, 0, 0, 0.7);
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-    .sidebar a {
-      color: #aaa;
-      text-decoration: none;
-      margin: 12px 0;
-      font-weight: 600;
-      font-size: 16px;
-      padding: 10px;
-      border-radius: 8px;
-      transition: background-color 0.3s ease;
-    }
-    .sidebar a:hover {
-      background-color: #0d3e94;
-      color: #fff;
-    }
-    .sidebar .logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: #0d3e94;
-      margin-bottom: 25px;
-      text-align: center;
-    }
-    .main-content {
-      flex-grow: 1;
-      background: rgba(0, 0, 50, 0.7);
-      padding: 30px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-    }
+    /* Topbar */
     .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: var(--navy);
+      color: var(--white);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 30px;
-      font-size: 22px;
-      font-weight: 700;
-      color: #ffd700;
-      text-shadow: 0 0 5px #ffd700;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 1001;
     }
-    #welcomeText {
-      /* separate welcome text styling */
-    }
-    .logout-btn {
-      background-color: #8b0000cc;
+    .toggle-btn {
+      background: none;
       border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      color: #fff;
-      font-weight: 700;
+      color: var(--white);
+      font-size: 1.5rem;
       cursor: pointer;
-      transition: background-color 0.3s ease;
     }
-    .logout-btn:hover {
-      background-color: #a40000;
+    .brand {
+      font-size: 1.2rem;
+      font-weight: bold;
     }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
-      gap: 20px;
+    .user-info {
+      font-size: 0.95rem;
     }
-    .card {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow:
-        inset 4px 4px 8px rgba(255 255 255 / 0.2),
-        inset -4px -4px 8px rgba(0 0 0 / 0.3);
-      backdrop-filter: blur(6px);
-      color: #fff;
-      font-weight: 600;
-      text-align: center;
-      font-size: 18px;
+
+    /* Main layout below topbar */
+    .dashboard-container {
+      display: flex;
+      padding-top: 60px;
+      height: calc(100vh - 60px);
     }
-    @media (max-width: 600px) {
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: var(--navy);
+      color: var(--white);
+      transition: transform 0.3s ease, width 0.3s ease;
+      overflow: hidden;
+      transform: translateX(0);
+      position: relative;
+      z-index: 1000;
+    }
+    .sidebar.collapsed {
+      width: 0;
+    }
+    .sidebar.show {
+      transform: translateX(0);
+    }
+    @media (max-width: 768px) {
       .sidebar {
-        width: 60px;
-        padding: 10px;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        height: calc(100% - 60px);
+        transform: translateX(-100%);
+        width: 250px;
       }
-      .sidebar a {
-        font-size: 0;
-        padding: 12px 0;
+      .sidebar.show {
+        transform: translateX(0);
       }
-      .sidebar a::before {
-        content: attr(data-label);
-        font-size: 14px;
-        color: #aaa;
-        display: block;
-        text-align: center;
-        margin-top: 4px;
+    }
+    .logo-container h2 {
+      text-align: center;
+      padding: 20px 0;
+      font-size: 1.1rem;
+    }
+    .main-nav {
+      list-style: none;
+      padding: 0;
+    }
+    .main-nav li {
+      margin: 15px 0;
+    }
+    .main-nav a {
+      display: flex;
+      align-items: center;
+      color: var(--white);
+      padding: 10px 20px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .main-nav a:hover,
+    .main-nav .active a {
+      background: var(--accent);
+    }
+    .main-nav i {
+      margin-right: 12px;
+      width: 20px;
+      text-align: center;
+    }
+    .sidebar.collapsed .logo-container h2,
+    .sidebar.collapsed .main-nav span {
+      display: none;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .content-wrapper {
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(135deg, var(--blue), var(--maroon));
+      border-radius: 16px;
+      padding: 60px 40px;
+      text-align: center;
+      color: var(--gold);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.25);
+      margin-bottom: 30px;
+    }
+    .hero-section h1 {
+      font-size: 3.5rem;
+      letter-spacing: 2px;
+      text-shadow: 0 0 15px gold;
+    }
+    .hero-section p {
+      font-size: 1.3rem;
+      max-width: 900px;
+      margin: 20px auto 0;
+      color: #fcefb4;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+    }
+
+    /* Slideshow */
+    .slideshow {
+      position: relative;
+      overflow: hidden;
+      height: 50vh;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .slides {
+      display: flex;
+      width: 300%;
+      height: 100%;
+      transition: transform 0.8s ease;
+    }
+    .slide {
+      flex: 0 0 100%;
+    }
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .dots {
+      position: absolute;
+      bottom: 15px;
+      width: 100%;
+      text-align: center;
+    }
+    .dot {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin: 0 5px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .dot.active {
+      background: #fff;
+    }
+
+    /* Advert Cards */
+    .adverts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .ad-card {
+      background: var(--cute-bg);
+      border: 2px solid var(--cute-border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .ad-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px rgba(255,105,180,0.3);
+    }
+    .ad-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+    .ad-content {
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .ad-content h3 {
+      margin-bottom: 0.5rem;
+      color: var(--cute-accent);
+    }
+    .ad-content p {
+      font-size: 0.85rem;
+      line-height: 1.3;
+      color: #555;
+    }
+    .ad-content a {
+      display: inline-block;
+      margin-top: 0.5rem;
+      padding: 0.4rem 0.8rem;
+      background: var(--cute-accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 15px;
+      transition: background 0.3s;
+    }
+    .ad-content a:hover {
+      background: var(--cute-border);
+      color: #333;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: var(--maroon);
+      color: #fff;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      margin-top: 2rem;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.show {
+        transform: translateX(0);
       }
       .main-content {
         padding: 15px;
+      }
+      .slideshow {
+        height: 35vh;
+      }
+      .adverts {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-  <nav class="sidebar" aria-label="Primary">
-    <div class="logo">StreetFinest</div>
-    <a href="#" data-label="Home">Home</a>
-    <a href="#" data-label="About">About</a>
-    <a href="#" data-label="Profile">Profile</a>
-    <a href="#" data-label="Academics">Academics</a>
-    <a href="#" data-label="Opportunities">Opportunities</a>
-    <a href="#" data-label="Social Life">Social Life</a>
-    <a href="#" data-label="Innovation">Innovation</a>
-    <a href="#" data-label="Investments">Investments</a>
-  </nav>
 
-  <main class="main-content" role="main" aria-label="Dashboard main content">
-    <div class="topbar">
-      <span id="welcomeText">Loading user...</span>
-      <button class="logout-btn" id="logoutBtn">Logout</button>
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="left-group">
+      <button class="toggle-btn" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+      <span class="brand">STREET-FINEST</span>
     </div>
+    <div class="user-info">
+      Hello, <strong id="username-display">User</strong>
+    </div>
+  </header>
 
-    <section class="cards">
-      <div class="card">Academics content</div>
-      <div class="card">Opportunities content</div>
-      <div class="card">Social Life content</div>
-      <div class="card">Investments content</div>
-    </section>
-  </main>
+  <div class="dashboard-container" id="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-container"><h2>STREET-FINEST</h2></div>
+      <ul class="main-nav">
+        <li class="active"><a href="#"><i class="fas fa-home"></i><span>Home</span></a></li>
+        <li><a href="#"><i class="fas fa-user"></i><span>Profile</span></a></li>
+        <li><a href="#"><i class="fas fa-graduation-cap"></i><span>Academics</span></a></li>
+        <li><a href="#"><i class="fas fa-briefcase"></i><span>Opportunities</span></a></li>
+        <li><a href="#"><i class="fas fa-users"></i><span>Social Life</span></a></li>
+        <li><a href="#"><i class="fas fa-lightbulb"></i><span>Innovation</span></a></li>
+        <li><a href="#"><i class="fas fa-chart-line"></i><span>Investments</span></a></li>
+        <li><a href="#"><i class="fas fa-info-circle"></i><span>About</span></a></li>
+      </ul>
+    </aside>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import {
-      getAuth,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="content-wrapper">
+        <section class="hero-section">
+          <h1>STREET-FINEST</h1>
+          <p>Unlock Opportunities • Embrace Innovation • Excel in Academics • Live Socially</p>
+        </section>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDa4bdOsY_EacamNTsruqnyII6wTJPStJA",
-      authDomain: "streetfinest-5252a.firebaseapp.com",
-      projectId: "streetfinest-5252a",
-      storageBucket: "streetfinest-5252a.appspot.com",
-      messagingSenderId: "95725479905",
-      appId: "1:95725479905:web:31771e426d7c9ebbb594a0"
-    };
+        <div class="slideshow" id="slideshow">
+          <div class="slides">
+            <div class="slide"><img src="images/slide1.jpeg" alt="Slide 1"></div>
+            <div class="slide"><img src="images/slide2.jpeg" alt="Slide 2"></div>
+            <div class="slide"><img src="images/slide3.jpeg" alt="Slide 3"></div>
+          </div>
+          <div class="dots" id="dots">
+            <span class="dot active" data-index="0"></span>
+            <span class="dot" data-index="1"></span>
+            <span class="dot" data-index="2"></span>
+          </div>
+        </div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+        <section class="adverts">
+          <div class="ad-card">
+            <img src="images/ad1.jpg" alt="Ad 1">
+            <div class="ad-content">
+              <h3>Scholarship Alert</h3>
+              <p>Apply now for the Turkiye Excellence Scholarship and study abroad!</p>
+              <a href="#">Learn More →</a>
+            </div>
+          </div>
+          <div class="ad-card">
+            <img src="images/ad2.jpg" alt="Ad 2">
+            <div class="ad-content">
+              <h3>Startup Grant</h3>
+              <p>Secure funding for your business idea—apply for grants today.</p>
+              <a href="#">Apply Now →</a>
+            </div>
+          </div>
+          <div class="ad-card">
+            <img src="images/ad3.jpeg" alt="Ad 3">
+            <div class="ad-content">
+              <h3>Online Course</h3>
+              <p>Master web development with our exclusive StreetFinest tutorials.</p>
+              <a href="#">Get Started →</a>
+            </div>
+          </div>
+        </section>
 
-    const welcomeText = document.getElementById("welcomeText");
-    const logoutBtn = document.getElementById("logoutBtn");
+        <footer>
+          &copy; <span id="year"></span> StreetFinest. All rights reserved.
+        </footer>
+      </div>
+    </main>
+  </div>
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const name = user.displayName || user.email;
-        welcomeText.textContent = `Welcome, ${name}!`;
+  <script>
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    const dashboard = document.getElementById('dashboard');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    toggleBtn.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        sidebar.classList.toggle('show');
       } else {
-        // Not logged in, redirect to login page
-        window.location.href = "login.html";
+        sidebar.classList.toggle('collapsed');
+      }
+    });
+    document.addEventListener('click', e => {
+      if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
+        sidebar.classList.remove('show');
       }
     });
 
-    logoutBtn.addEventListener("click", async () => {
-      try {
-        await signOut(auth);
-        window.location.href = "login.html";
-      } catch (error) {
-        alert("Error signing out: " + error.message);
-      }
-    });
+    // Slideshow
+    const slidesEl = document.querySelector('.slides');
+    const dots = document.querySelectorAll('.dot');
+    let current = 0, total = dots.length;
+    function goToSlide(idx) {
+      slidesEl.style.transform = `translateX(-${idx * 100}%)`;
+      dots.forEach(d => d.classList.remove('active'));
+      dots[idx].classList.add('active');
+      current = idx;
+    }
+    let interval = setInterval(() => goToSlide((current + 1) % total), 5000);
+    dots.forEach(dot => dot.addEventListener('click', () => {
+      clearInterval(interval);
+      goToSlide(Number(dot.dataset.index));
+    }));
+
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
