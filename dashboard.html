@@ -63,6 +63,9 @@
       color: #ffd700;
       text-shadow: 0 0 5px #ffd700;
     }
+    #welcomeText {
+      /* separate welcome text styling */
+    }
     .logout-btn {
       background-color: #8b0000cc;
       border: none;
@@ -131,8 +134,8 @@
   </nav>
 
   <main class="main-content" role="main" aria-label="Dashboard main content">
-    <div class="topbar" id="welcomeMessage">
-      Loading user...
+    <div class="topbar">
+      <span id="welcomeText">Loading user...</span>
       <button class="logout-btn" id="logoutBtn">Logout</button>
     </div>
 
@@ -164,14 +167,15 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const welcomeMessage = document.getElementById("welcomeMessage");
+    const welcomeText = document.getElementById("welcomeText");
     const logoutBtn = document.getElementById("logoutBtn");
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
         const name = user.displayName || user.email;
-        welcomeMessage.firstChild.textContent = `Welcome, ${name}!`;
+        welcomeText.textContent = `Welcome, ${name}!`;
       } else {
+        // Not logged in, redirect to login page
         window.location.href = "login.html";
       }
     });
