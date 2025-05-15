@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - StreetFinest</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .container {
+      max-width: 400px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .logo img {
+      max-width: 140px;
+      height: auto;
+      margin: 0 auto 15px;
+    }
+    h2 {
+      margin-bottom: 5px;
+      color: #111;
+    }
+    p.subtitle {
+      color: #555;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    .login-btn {
+      background-color: #0d3e94;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .login-btn:hover {
+      background-color: #0a2f73;
+    }
+    .google-btn {
+      background-color: #d93025;
+      color: #fff;
+      padding: 12px;
+      margin-top: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .google-btn:hover {
+      background-color: #b6281f;
+    }
+    .forgot-password {
+      font-size: 12px;
+      color: #666;
+      margin-top: 12px;
+      text-align: right;
+    }
+    .forgot-password a {
+      color: #0d3e94;
+      text-decoration: none;
+    }
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+    .terms {
+      font-size: 12px;
+      color: #666;
+      margin-top: 15px;
+    }
+    .terms a {
+      color: #0d3e94;
+      text-decoration: none;
+    }
+    .terms a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 480px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="streetfinest-logo.png" alt="StreetFinest Logo" />
+    </div>
+    <h2>Login</h2>
+    <p class="subtitle">Welcome back, please login</p>
+
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit" class="login-btn">Login</button>
+    </form>
+
+    <div class="google-btn" id="googleBtn">Sign in with Google</div>
+
+    <p class="forgot-password">
+      <a href="#" id="resetPassword">Forgot Password?</a>
+    </p>
+    <p class="terms">
+      Don't have an account? <a href="register.html">Register here</a>
+    </p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail,
+      GoogleAuthProvider,
+      signInWithPopup,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDa4bdOsY_EacamNTsruqnyII6wTJPStJA",
+      authDomain: "streetfinest-5252a.firebaseapp.com",
+      projectId: "streetfinest-5252a",
+      storageBucket: "streetfinest-5252a.appspot.com",
+      messagingSenderId: "95725479905",
+      appId: "1:95725479905:web:31771e426d7c9ebbb594a0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const loginForm = document.getElementById("loginForm");
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        alert("Login failed: " + error.message);
+      }
+    });
+
+    // Google sign-in
+    const googleBtn = document.getElementById("googleBtn");
+    googleBtn.addEventListener("click", async () => {
+      const provider = new GoogleAuthProvider();
+      try {
+        await signInWithPopup(auth, provider);
+        window.location.href = "dashboard.html";
+      } catch (error) {
+        alert("Google sign-in failed: " + error.message);
+      }
+    });
+
+    // Password reset
+    const resetPasswordLink = document.getElementById("resetPassword");
+    resetPasswordLink.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const email = prompt("Please enter your email for password reset:");
+      if (email) {
+        try {
+          await sendPasswordResetEmail(auth, email);
+          alert("Password reset email sent! Check your inbox.");
+        } catch (error) {
+          alert("Error sending reset email: " + error.message);
+        }
+      }
+    });
+
+    // If user already logged in, redirect to dashboard
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        window.location.href = "dashboard.html";
+      }
+    });
+  </script>
+</body>
+</html>
