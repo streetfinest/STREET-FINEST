@@ -39,6 +39,7 @@
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 14px;
+      box-sizing: border-box;
     }
     .register-btn {
       background-color: #0d3e94;
@@ -50,6 +51,7 @@
       font-size: 16px;
       cursor: pointer;
       margin-top: 10px;
+      transition: background-color 0.3s ease;
     }
     .register-btn:hover {
       background-color: #0a2f73;
@@ -62,6 +64,8 @@
       border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
+      user-select: none;
+      transition: background-color 0.3s ease;
     }
     .google-btn:hover {
       background-color: #b6281f;
@@ -98,8 +102,8 @@
       <input type="text" id="fullName" placeholder="Full Name" required />
       <input type="text" id="username" placeholder="Username" required />
       <input type="email" id="email" placeholder="Email" required />
-      <input type="tel" id="phone" placeholder="Phone Number" required />
-      <input type="password" id="password" placeholder="Password" required />
+      <input type="tel" id="phone" placeholder="Phone Number" required pattern="[0-9]{10,15}" title="Enter valid phone number" />
+      <input type="password" id="password" placeholder="Password (min 6 characters)" required minlength="6" />
       <button type="submit" class="register-btn">Register</button>
     </form>
 
@@ -123,15 +127,14 @@
       signInWithPopup,
     } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
-   const firebaseConfig = {
-  apiKey: "AIzaSyBF12CNg5zgcROAmkDKgc2HVkmRBZ2VyDM",
-  authDomain: "streetfinest-9360e.firebaseapp.com",
-  projectId: "streetfinest-9360e",
-  storageBucket: "streetfinest-9360e.appspot.com", // ✅ FIXED HERE
-  messagingSenderId: "603098957105",
-  appId: "1:603098957105:web:d9de363d61e6e9245c1c10"
-};
-
+    const firebaseConfig = {
+      apiKey: "AIzaSyBF12CNg5zgcROAmkDKgc2HVkmRBZ2VyDM",
+      authDomain: "streetfinest-9360e.firebaseapp.com",
+      projectId: "streetfinest-9360e",
+      storageBucket: "streetfinest-9360e.appspot.com",
+      messagingSenderId: "603098957105",
+      appId: "1:603098957105:web:d9de363d61e6e9245c1c10"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -148,7 +151,8 @@
 
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        // Update profile displayName with fullName or username
+
+        // Update user profile displayName with fullName or username
         await updateProfile(userCredential.user, {
           displayName: fullName || username
         });
